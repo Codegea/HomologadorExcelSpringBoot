@@ -1,0 +1,32 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Carga de ficheros</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" 
+              integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" 
+              crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card mt-7">
+                        <div class="card-header text-center h1">Resultado del proceso</div>
+                        <div class="card-body">
+                            <div class="row form-group">
+                                <div th:if="${message}">
+                                    <div class="text-center" th:text="${message}"></div>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <form action="/">
+                                    <button type="submit" class="btn btn-success col-md-5 offset-4 mt-3">Regresar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
