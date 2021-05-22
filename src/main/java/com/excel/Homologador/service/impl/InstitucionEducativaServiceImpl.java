@@ -20,15 +20,15 @@ import com.excel.Homologador.service.IInstitucionEducativaService;
 
 @Service
 public class InstitucionEducativaServiceImpl implements IInstitucionEducativaService {
-    
+
     @Autowired
     IInstitucionEducativaDao institucionEducativaDao;
-    
+
     Logger logger = LoggerFactory.getLogger(InstitucionEducativaServiceImpl.class);
 
     @Override
     public StringBuilder uploadFile(MultipartFile file, RedirectAttributes attributes) throws IOException {
-        
+
         StringBuilder builder = new StringBuilder();
         builder.append(System.getProperty("user.home"));
         builder.append(File.separator);
@@ -39,7 +39,7 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
         byte[] fileBytes = file.getBytes();
         Path path = Paths.get(builder.toString());
         Files.write(path, fileBytes);
-        
+
         return builder;
     }
 

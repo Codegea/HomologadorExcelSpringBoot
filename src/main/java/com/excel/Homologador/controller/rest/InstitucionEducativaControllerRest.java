@@ -13,9 +13,9 @@ public class InstitucionEducativaControllerRest {
 
     @Autowired
     IInstitucionEducativaDao institucionEducativaDao;
-    
+
     @GetMapping("/listar")
-    public List listarRest(){
+    public List listarRest() {
         return institucionEducativaDao.findAll();
     }
 

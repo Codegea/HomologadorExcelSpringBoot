@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class RegistrosDto {
+
     private String valorActualSIGEPII;
     private String valorNuevoSIGEPII;
 }

@@ -13,7 +13,7 @@ import com.excel.Homologador.service.IInstitucionEducativaService;
 
 @Controller
 public class HomologadorController extends Object {
-    
+
     @Autowired
     IInstitucionEducativaService homologador;
 
@@ -32,7 +32,7 @@ public class HomologadorController extends Object {
         }
 
         StringBuilder builder = homologador.uploadFile(file, attributes);
-        
+
         boolean homologarFichero = homologador.homologarFichero();
 
         attributes.addFlashAttribute("message", "Archivo cargado en el servidor satisfactoriamente : " + builder.toString());

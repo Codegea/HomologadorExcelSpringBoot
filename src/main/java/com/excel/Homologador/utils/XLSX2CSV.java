@@ -143,7 +143,6 @@ public class XLSX2CSV {
         }
     }
 
-    
     private final OPCPackage xlsxPackage;
 
     /**
@@ -225,10 +224,10 @@ public class XLSX2CSV {
         try {
             long inicio = System.currentTimeMillis();
 
-            File xlsxFile = new File("C:\\Users\\usuario\\uploads\\datos.xlsx");
+            File xlsxFile = new File("C:\\Users\\Codegea\\uploads\\datos.xlsx");
             if (!xlsxFile.exists()) {
                 logger.error("Archivo xlsx no encontrado: " + xlsxFile.getPath());
-                
+
                 return new ArrayList<>();
             }
 
@@ -239,7 +238,7 @@ public class XLSX2CSV {
             long fin = System.currentTimeMillis();
             double tiempo = (double) ((inicio - fin) / 1000);
             logger.info("Tiempo : " + tiempo);
-            
+
         } catch (IOException | OpenXML4JException | SAXException ex) {
             logger.error(null, ex);
         }
