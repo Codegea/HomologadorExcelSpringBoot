@@ -1,9 +1,12 @@
 package com.excel.Homologador.entity;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,5 +52,8 @@ public class InstitucionEducativa {
 
     @Column(name = "FLG_INST_EXTRAJERA", nullable = true)
     private Long flgInstExtrajera;
-
+    
+    @OneToMany(mappedBy = "institucionEducativa", fetch = FetchType.EAGER)
+    private List<ProgramaAcademico> programasAcademicos;
+    
 }
