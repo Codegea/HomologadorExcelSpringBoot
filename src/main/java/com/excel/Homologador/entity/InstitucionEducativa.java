@@ -1,5 +1,6 @@
 package com.excel.Homologador.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -19,7 +20,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "institucion_educativa")
-public class InstitucionEducativa {
+public class InstitucionEducativa implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Column(name = "COD_INSTITUCION_EDUCATIVA")
@@ -53,7 +56,7 @@ public class InstitucionEducativa {
     @Column(name = "FLG_INST_EXTRAJERA", nullable = true)
     private Long flgInstExtrajera;
     
-    @OneToMany(mappedBy = "institucionEducativa", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "institucionEducativa")
     private List<ProgramaAcademico> programasAcademicos;
     
 }

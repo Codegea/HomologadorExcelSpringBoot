@@ -1,6 +1,8 @@
 package com.excel.Homologador.entity;
 
+import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,8 +21,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "educacion_formal")
-public class EducacionFormal {
-
+public class EducacionFormal implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @Column(name = "COD_EDUCACION_FORMAL", nullable = true)
     private Long codEducacionFormal;
@@ -45,9 +49,6 @@ public class EducacionFormal {
 
     @Column(name = "COD_MUNICIPIO")
     private Long codMunicipio;
-
-//    @Column(name = "COD_PROGRAMA_ACADEMICO")
-//    private Long codProgramaAcademico;
 
     @Column(name = "FECHA_INICIO")
     @Temporal(TemporalType.DATE) // preguntar por esta!!
@@ -134,7 +135,7 @@ public class EducacionFormal {
     @Temporal(TemporalType.DATE)
     private Date dtFechaUltimaActualizacion;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "COD_PROGRAMA_ACADEMICO")
     private ProgramaAcademico programaAcademico;
 

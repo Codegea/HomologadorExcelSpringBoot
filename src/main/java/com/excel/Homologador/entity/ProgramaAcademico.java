@@ -1,10 +1,11 @@
 package com.excel.Homologador.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,18 +24,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "programa_academico")
-public class ProgramaAcademico {
+public class ProgramaAcademico implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "COD_TITULO_ACADEMICO", nullable = true)
     private Long codTituloAcademico;
 
-    @Column(name = "COD_INSTITUCION")
-    private Long codInstitucion;
-
-//    @Column(name = "COD_PROGRAMA_ACADEMICO")
-//    private Long codProgramaAcademico;
+    @Column(name = "COD_PROGRAMA_ACADEMICO")
+    private Long codProgramaAcademico;
 
     @Column(name = "NOMBRE_PROGRAMA_ACADEMICO")
     private String nombreProgramaAcademico;
@@ -58,11 +58,11 @@ public class ProgramaAcademico {
     @Column(name = "AUD_ACCION")
     private Long audAccion;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "COD_INSTITUCION")
-//    private InstitucionEducativa institucionEducativa;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "COD_INSTITUCION")
+    private InstitucionEducativa institucionEducativa;
     
-    @OneToMany(mappedBy = "programaAcademico", fetch = FetchType.EAGER)
-    private List<EducacionFormal> educacionesFormales;
+    @OneToMany(mappedBy = "programaAcademico")
+    private List<EducacionFormal> eduFormales;
     
 }
