@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,9 +21,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "educacion_formal")
 public class EducacionFormal implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @Column(name = "COD_EDUCACION_FORMAL", nullable = true)
     private Long codEducacionFormal;
@@ -134,7 +133,7 @@ public class EducacionFormal implements Serializable {
     @Column(name = "DT_FECHA_ULTIMA_ACTUALIZACION", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date dtFechaUltimaActualizacion;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "COD_PROGRAMA_ACADEMICO")
     private ProgramaAcademico programaAcademico;

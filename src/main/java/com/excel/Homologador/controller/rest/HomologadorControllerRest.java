@@ -23,13 +23,18 @@ public class HomologadorControllerRest {
 
     @Autowired
     IProgramaAcademicoDao programaAcademicoDao;
-    
+
     @Autowired
-    IEducacionFormalDao educacionFormalDao; 
+    IEducacionFormalDao educacionFormalDao;
 
     @GetMapping("/listarInstituciones")
     public Page<InstitucionEducativa> listarRest(@PageableDefault(size = 10, page = 0) Pageable pageable) {
         return institucionEducativaDao.findAll(pageable);
+    }
+
+    @GetMapping("/listarxNombre")
+    public InstitucionEducativa listarXNombre() {
+        return institucionEducativaDao.findByNombreInstitucion("FUNDACION UNIVERSIDAD DE AMERICA");
     }
 
     @GetMapping("/listarProgramasAcade")

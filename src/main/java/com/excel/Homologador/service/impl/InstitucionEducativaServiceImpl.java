@@ -51,10 +51,28 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                 for (RegistrosDto registro : registros) {
                     InstitucionEducativa institucionEducativa = institucionEducativaDao.findByNombreInstitucion(registro.getValorActualSIGEPII());
                     if (institucionEducativa != null) {
-                        logger.info("Registro encontrado : " + institucionEducativa.toString());
+
+                        if (registro.getElimBorradoFisico().equals("SI")) {
+                            // CONSULTA POR CADA PROGRAMA ACADEMICO ASICIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
+                            // SI EL RESULTADO ES VACIO ENTONCES SE DEBE ELIMINAR LA INSTITUCION EDUCATIVA Y TODAS SUS DEPENDENCIAS
+
+                            // SI ENCONTRO REGISTROS AQUI DEBEMOS 
+                            // CONSULTAR EN BASE DE DATOS AL REGISTRO EN INSTITUCION EDUCATIVA = "REQUIERE CORRECCION" 
+                            // Y OBTENEMOS EL VALOR DEL ID.
+                            // AHORA DEBEMOS ASOCIAR TODOS LOS PROGRAMAS ACADEMICOS Y EDICACION FORMAL A ESTE TIPO
+                            // DE INSTITUCION EDUCATIVA "REQUIERE CORRECCION", 
+                            // Y POR ULTIMO DEBEMOS ELIMINAR ESE REGISTRO MALO 
+                            // EN LA TABLA INSTITUCION EDUCATIVA
+                        }
+
+//                      logger.info("Registro encontrado : " + institucionEducativa.toString());
                         institucionEducativa.setNombreInstitucion(registro.getValorNuevoSIGEPII());
-                        InstitucionEducativa registroProcesado = institucionEducativaDao.save(institucionEducativa);
-                        logger.info("Registro procesado : " + registroProcesado.toString());
+                        logger.info("\n\n\n***************************************\n\nInstitucionEducativa OK: " + registro.getValorNuevoSIGEPII());
+                        logger.info("InstitucionEducativa CORREGIR: " + registro.getValorActualSIGEPII());
+                        logger.info("Cantidad de programas academicos encontrados para ajustar: " + institucionEducativa.getProgramasAcademicos().size());
+
+//                      InstitucionEducativa registroProcesado = institucionEducativaDao.save(institucionEducativa);
+//                      logger.info("Registro procesado : " + registroProcesado.toString());
                     }
                 }
             }

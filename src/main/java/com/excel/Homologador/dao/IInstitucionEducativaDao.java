@@ -9,5 +9,4 @@ public interface IInstitucionEducativaDao extends JpaRepository<InstitucionEduca
 
     public InstitucionEducativa findByNombreInstitucion(String nombreInstitucion);
 
-
 }

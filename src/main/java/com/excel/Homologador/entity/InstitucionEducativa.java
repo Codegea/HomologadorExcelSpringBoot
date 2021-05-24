@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -21,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "institucion_educativa")
 public class InstitucionEducativa implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -55,8 +54,8 @@ public class InstitucionEducativa implements Serializable {
 
     @Column(name = "FLG_INST_EXTRAJERA", nullable = true)
     private Long flgInstExtrajera;
-    
+
     @OneToMany(mappedBy = "institucionEducativa")
     private List<ProgramaAcademico> programasAcademicos;
-    
+
 }

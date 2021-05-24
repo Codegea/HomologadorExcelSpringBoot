@@ -96,14 +96,18 @@ public class XLSX2CSV {
             }
 
             if (cellReference.contains("D")) {
-
-                if (registros == null) {
-                    registros = new ArrayList<>();
-                }
                 registro.setValorNuevoSIGEPII(formattedValue);
-                registros.add(registro);
-
             }
+
+            if (cellReference.contains("E")) {
+                registro.setElimBorradoFisico(formattedValue);
+            }
+
+            if (registros == null) {
+                registros = new ArrayList<>();
+            }
+
+            registros.add(registro);
 
             // Did we miss any cells?
             int thisCol = (new CellReference(cellReference)).getCol();
@@ -211,7 +215,7 @@ public class XLSX2CSV {
         XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
         int index = 0;
         while (iter.hasNext()) {
-            try ( InputStream stream = iter.next()) {
+            try (InputStream stream = iter.next()) {
                 String sheetName = iter.getSheetName();
                 logger.info("Leyendo hoja de calculo : " + sheetName);
                 processSheet(styles, strings, new SheetToCSV(), stream);
