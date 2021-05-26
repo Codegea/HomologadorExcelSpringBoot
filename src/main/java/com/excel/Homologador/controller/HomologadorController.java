@@ -32,7 +32,8 @@ public class HomologadorController extends Object {
         }
 
         StringBuilder builder = homologador.uploadFile(file, attributes);
-
+        // ESTE PROCESO DEBERA RETORNAR UNA LISTA DE INSTITUCIONES EDUCATIVAS CON REGISTROS MULTIPLES POR SU NOMBRE
+        // SI HAY REGISTROS EN ESTA LISTA SE DEBE MOSTRAR AL USUARIO UNA TABLA CON EL CONTENIDO
         boolean homologarFichero = homologador.homologarFichero();
 
         attributes.addFlashAttribute("message", "Archivo cargado en el servidor satisfactoriamente : " + builder.toString());

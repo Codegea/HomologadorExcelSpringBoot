@@ -2,14 +2,13 @@ package com.excel.Homologador.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.CascadeType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -56,8 +55,10 @@ public class ProgramaAcademico implements Serializable {
     @Column(name = "AUD_ACCION")
     private Long audAccion;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "COD_INSTITUCION")
-    private InstitucionEducativa institucionEducativa;
+    @Column(name = "COD_INSTITUCION")
+    private Long institucionEducativa;
+
+    @OneToMany(mappedBy = "programaAcademico")
+    private List<EducacionFormal> listaEduFormal;
 
 }

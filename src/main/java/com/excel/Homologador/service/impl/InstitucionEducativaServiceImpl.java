@@ -43,41 +43,50 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
         return builder;
     }
 
+    /**
+     * En este metodo se almacenara en la lista que se retorne las intituciones
+     * repetidas y que en pantalla se van a mostrar.
+     *
+     * @return CAMBIAR A RETORNO DE UNA LISTA InstitucionEducativa
+     */
     @Override
     public boolean homologarFichero() {
         try {
             List<RegistrosDto> registros = XLSX2CSV.ProcesarExcel();
             if (!registros.isEmpty()) {
                 for (RegistrosDto registro : registros) {
-                    InstitucionEducativa institucionEducativa = institucionEducativaDao.findByNombreInstitucion(registro.getValorActualSIGEPII());
-                    if (institucionEducativa != null) {
+                    List<InstitucionEducativa> listaInstitucionEducativa = institucionEducativaDao.findByNombreInstitucion(registro.getValorActualSIGEPII());
 
-                        if (registro.getElimBorradoFisico().equals("SI")) {
-                            // CONSULTA POR CADA PROGRAMA ACADEMICO ASICIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
-                            // SI EL RESULTADO ES VACIO ENTONCES SE DEBE ELIMINAR LA INSTITUCION EDUCATIVA Y TODAS SUS DEPENDENCIAS
+                    if (!listaInstitucionEducativa.isEmpty() && listaInstitucionEducativa != null && listaInstitucionEducativa.size() < 2) {
+                        for (InstitucionEducativa institucionEducativa : listaInstitucionEducativa) {
+                            if (registro.getElimBorradoFisico().equals("SI")) {
+                                // CONSULTA POR CADA PROGRAMA ACADEMICO ASICIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
+                                // SI EL RESULTADO ES VACIO ENTONCES SE DEBE ELIMINAR LA INSTITUCION EDUCATIVA Y TODAS SUS DEPENDENCIAS
 
-                            // SI ENCONTRO REGISTROS AQUI DEBEMOS 
-                            // CONSULTAR EN BASE DE DATOS AL REGISTRO EN INSTITUCION EDUCATIVA = "REQUIERE CORRECCION" 
-                            // Y OBTENEMOS EL VALOR DEL ID.
-                            // AHORA DEBEMOS ASOCIAR TODOS LOS PROGRAMAS ACADEMICOS Y EDICACION FORMAL A ESTE TIPO
-                            // DE INSTITUCION EDUCATIVA "REQUIERE CORRECCION", 
-                            // Y POR ULTIMO DEBEMOS ELIMINAR ESE REGISTRO MALO 
-                            // EN LA TABLA INSTITUCION EDUCATIVA
-                        }
+                                // SI ENCONTRO REGISTROS AQUI DEBEMOS 
+                                // CONSULTAR EN BASE DE DATOS AL REGISTRO EN INSTITUCION EDUCATIVA = "REQUIERE CORRECCION" 
+                                // Y OBTENEMOS EL VALOR DEL ID.
+                                // AHORA DEBEMOS ASOCIAR TODOS LOS PROGRAMAS ACADEMICOS Y EDICACION FORMAL A ESTE TIPO
+                                // DE INSTITUCION EDUCATIVA "REQUIERE CORRECCION", 
+                                // Y POR ULTIMO DEBEMOS ELIMINAR ESE REGISTRO MALO 
+                                // EN LA TABLA INSTITUCION EDUCATIVA
+                            }
 
 //                      logger.info("Registro encontrado : " + institucionEducativa.toString());
-                        institucionEducativa.setNombreInstitucion(registro.getValorNuevoSIGEPII());
-                        logger.info("\n\n\n***************************************\n\nInstitucionEducativa OK: " + registro.getValorNuevoSIGEPII());
-                        logger.info("InstitucionEducativa CORREGIR: " + registro.getValorActualSIGEPII());
-                        logger.info("Cantidad de programas academicos encontrados para ajustar: " + institucionEducativa.getProgramasAcademicos().size());
-
+                            institucionEducativa.setNombreInstitucion(registro.getValorNuevoSIGEPII());
+                            logger.info("\n\n\n***************************************\n\nInstitucionEducativa OK: " + registro.getValorNuevoSIGEPII());
+                            logger.info("InstitucionEducativa CORREGIR: " + registro.getValorActualSIGEPII());
+                            logger.info("Cantidad de programas academicos encontrados para ajustar: " + institucionEducativa.getProgramasAcademicos().size());
+                            System.out.println("Institucion Educativa encontrada: " + institucionEducativa);
 //                      InstitucionEducativa registroProcesado = institucionEducativaDao.save(institucionEducativa);
 //                      logger.info("Registro procesado : " + registroProcesado.toString());
+                        }
                     }
                 }
             }
         } catch (Exception ex) {
             logger.error(null, ex);
+            return false;
         }
         return true;
     }

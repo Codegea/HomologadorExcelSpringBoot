@@ -101,13 +101,11 @@ public class XLSX2CSV {
 
             if (cellReference.contains("E")) {
                 registro.setElimBorradoFisico(formattedValue);
+                if (registros == null) {
+                    registros = new ArrayList<>();
+                }
+                registros.add(registro);
             }
-
-            if (registros == null) {
-                registros = new ArrayList<>();
-            }
-
-            registros.add(registro);
 
             // Did we miss any cells?
             int thisCol = (new CellReference(cellReference)).getCol();
