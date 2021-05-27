@@ -15,6 +15,6 @@ public class ProgramaAcademicoDto {
     private Long audCodUsuario;
     private Long audCodRol;
     private Long audAccion;
-    private Long institucionEducativa;
+    private InstitucionEducativaDto institucionEducativa;
 
 }

@@ -2,9 +2,11 @@ package com.excel.Homologador.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -55,7 +57,7 @@ public class InstitucionEducativa implements Serializable {
     @Column(name = "FLG_INST_EXTRAJERA", nullable = true)
     private Long flgInstExtrajera;
 
-    @OneToMany(mappedBy = "institucionEducativa")
-    private List<ProgramaAcademico> programasAcademicos;
-
+    @OneToMany(mappedBy = "institucionEdu", fetch = FetchType.LAZY)
+    private Set<ProgramaAcademico> programasAcademicos = new HashSet<>();
+    
 }

@@ -31,7 +31,7 @@ public class ConvertidorEntityToDto {
         programaAcademicoDto.setCodProgramaAcademico(entity.getCodProgramaAcademico());
         programaAcademicoDto.setCodTituloAcademico(entity.getCodTituloAcademico());
         programaAcademicoDto.setFlgActivo(entity.getFlgActivo());
-        programaAcademicoDto.setInstitucionEducativa(entity.getInstitucionEducativa());
+        programaAcademicoDto.setInstitucionEducativa(ConvertidorEntityToDto.institucionEducativaEntityToDto(entity.getInstitucionEdu()));
         programaAcademicoDto.setNombreProgramaAcademico(entity.getNombreProgramaAcademico());
         programaAcademicoDto.setNombreTituloOtorgado(entity.getNombreTituloOtorgado());
         return programaAcademicoDto;

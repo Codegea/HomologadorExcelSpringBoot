@@ -1,9 +1,12 @@
 package com.excel.Homologador.entity;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +28,8 @@ public class EducacionFormal implements Serializable {
     @Column(name = "COD_PERSONA", nullable = true)
     private Long codPersona;
 
-    @Column(name = "COD_PROGRAMA_ACADEMICO")
-    private Long programaAcademico;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "COD_PROGRAMA_ACADEMICO", referencedColumnName = "COD_TITULO_ACADEMICO")
+    ProgramaAcademico programa;
 
 }

@@ -17,7 +17,7 @@ public class InstitucionEducativaServiceDaoImpl implements InstitucionEducativaS
     @Override
     @Transactional(readOnly = true)
     public List<InstitucionEducativa> listaInstitucionesEducativas() {
-        return (List<InstitucionEducativa>) institucionEducativaDao.findAll();
+        return institucionEducativaDao.findAll();
     }
 
     @Override
