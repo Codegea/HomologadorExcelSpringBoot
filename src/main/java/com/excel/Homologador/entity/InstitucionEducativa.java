@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -59,5 +60,8 @@ public class InstitucionEducativa implements Serializable {
 
     @OneToMany(mappedBy = "institucionEdu", fetch = FetchType.LAZY)
     private Set<ProgramaAcademico> programasAcademicos = new HashSet<>();
-    
+
+    @Transient
+    private String registro;
+
 }

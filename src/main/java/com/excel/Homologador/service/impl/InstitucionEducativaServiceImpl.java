@@ -62,8 +62,8 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
             if (!registros.isEmpty()) {
                 for (RegistrosDto registro : registros) {
                     List<InstitucionEducativa> listaInstitucionesXcorregir = institucionEducativaServiceDao.encontrarPorNombreInstitucion(registro.getValorActualSIGEPII());
-                    if (!listaInstitucionesXcorregir.isEmpty() && listaInstitucionesXcorregir != null && listaInstitucionesXcorregir.size() == 1) {
-                        InstitucionEducativa InstitucionCorrecta = institucionEducativaServiceDao.encontrarPorNombreInstitucion(registro.getValorNuevoSIGEPII()).get(0);
+                    List<InstitucionEducativa> listaInstitucionesCorrectas = institucionEducativaServiceDao.encontrarPorNombreInstitucion(registro.getValorNuevoSIGEPII());
+                    if (!listaInstitucionesCorrectas.isEmpty() && listaInstitucionesCorrectas != null && listaInstitucionesCorrectas.size() == 1) {
                         for (InstitucionEducativa institucionEducativa : listaInstitucionesXcorregir) {
                             if (registro.getElimBorradoFisico().equals("SI")) {
                                 logger.info("\n\n\n***************************************\n\nREGISTRO EXCEL MARCADO PARA BORRADO FISICO : " + registro.getValorActualSIGEPII());
@@ -111,13 +111,21 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                             institucionEducativa.setNombreInstitucion(registro.getValorNuevoSIGEPII());
                             logger.info("InstitucionEducativa VALOR ANTES DEL AJUSTE: " + registro.getValorActualSIGEPII());
                             logger.info("InstitucionEducativa AJUSTADA: " + registro.getValorNuevoSIGEPII());
-                            logger.info("Cantidad de programas academicos encontrados para ajustar: " + institucionEducativa.getProgramasAcademicos().size());
+                            logger.info("Cantidad de Programas Academicos Encontrados para Ajustar: " + institucionEducativa.getProgramasAcademicos().size());
                         }
                     } else {
-                        for (int i = 0; i < listaInstitucionesXcorregir.size(); i++) {
-                            registrosDuplicados.add(listaInstitucionesXcorregir.get(i));
-                            logger.info("Instituciones educativas duplicada : " + listaInstitucionesXcorregir.get(i));
+                        for (InstitucionEducativa listaInstitucionesCorrecta : listaInstitucionesCorrectas) {
+                            listaInstitucionesCorrecta.setRegistro(registro.getValorActualSIGEPII());
+                            registrosDuplicados.add(listaInstitucionesCorrecta);
                         }
+                    }
+
+                }
+                if (registrosDuplicados.size() > 0) {
+                    logger.info("\n\n ************* Instituciones Educativas Correctas Duplicadas ************* \n\n ");
+                    for (InstitucionEducativa registrosDuplicado : registrosDuplicados) {
+                        logger.info("REGISTRO EN EXCEL: " + registrosDuplicado.getRegistro() + " - INSTITUCION REPETIDA: " + registrosDuplicado.getNombreInstitucion()
+                                + " - COD_INSTITUCION_EDUCATIVA: " + registrosDuplicado.getCodInstitucionEducativa());
                     }
                 }
             }
