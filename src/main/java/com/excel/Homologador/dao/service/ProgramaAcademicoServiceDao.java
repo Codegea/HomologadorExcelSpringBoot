@@ -12,9 +12,9 @@ public interface ProgramaAcademicoServiceDao {
     public void guardar(ProgramaAcademico programaAcademico);
 
     public void eliminar(ProgramaAcademico programaAcademico);
-    
+
     public ProgramaAcademico actualizar(long id, InstitucionEducativa institucionEducativa);
-    
+
     public Optional<ProgramaAcademico> obtenerPorId(Long id);
 
 }

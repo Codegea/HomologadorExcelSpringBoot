@@ -3,7 +3,7 @@ package com.excel.Homologador.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -64,6 +64,6 @@ public class ProgramaAcademico implements Serializable {
     private InstitucionEducativa institucionEdu;
 
     @OneToMany(mappedBy = "programa")
-    private Set<EducacionFormal> listaEduFormal = new HashSet<>();
+    private List<EducacionFormal> listaEduFormal;
 
 }

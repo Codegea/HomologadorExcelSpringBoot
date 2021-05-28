@@ -1,6 +1,7 @@
 package com.excel.Homologador.service.impl;
 
 import com.excel.Homologador.dao.service.InstitucionEducativaServiceDao;
+import com.excel.Homologador.dao.service.ProgramaAcademicoServiceDao;
 import com.excel.Homologador.dto.ProgramaAcademicoDto;
 import com.excel.Homologador.dto.RegistrosDto;
 import com.excel.Homologador.entity.EducacionFormal;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.excel.Homologador.service.IInstitucionEducativaService;
-import com.excel.Homologador.utils.ConvertidorEntityToDto;
 import java.util.ArrayList;
 
 @Service
@@ -28,6 +28,9 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
 
     @Autowired
     InstitucionEducativaServiceDao institucionEducativaServiceDao;
+
+    @Autowired
+    ProgramaAcademicoServiceDao programaAcademicoServiceDao;
 
     Logger logger = LoggerFactory.getLogger(InstitucionEducativaServiceImpl.class);
 
@@ -52,11 +55,11 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
      * En este metodo se almacenara en la lista que se retorne las intituciones
      * repetidas y que en pantalla se van a mostrar.
      *
-     * @return CAMBIAR A RETORNO DE UNA LISTA InstitucionEducativa
+     * @return una lista de registrosDuplicados
      */
     @Override
     public List<InstitucionEducativa> homologarFichero() {
-        List<InstitucionEducativa> registrosDuplicados = new ArrayList<>();;
+        List<InstitucionEducativa> registrosDuplicados = new ArrayList<>();
         try {
             List<RegistrosDto> registros = XLSX2CSV.ProcesarExcel();
             if (!registros.isEmpty()) {
@@ -69,31 +72,29 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                                 logger.info("\n\n\n***************************************\n\nREGISTRO EXCEL MARCADO PARA BORRADO FISICO : " + registro.getValorActualSIGEPII());
                                 // CONSULTA POR CADA PROGRAMA ACADEMICO ASOCIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
                                 if (institucionEducativa.getProgramasAcademicos().size() > 0) {
-                                    List<ProgramaAcademicoDto> programaAcademicoDtos = null;
                                     for (ProgramaAcademico programaAcademico : institucionEducativa.getProgramasAcademicos()) {
                                         if (programaAcademico.getListaEduFormal().size() > 0) {
-                                            logger.info("\nINSTITUCION EDUCATIVA : " + institucionEducativa.getNombreInstitucion()
-                                                    + "\nPROGRAMA ACADEMICO: " + programaAcademico.getNombreProgramaAcademico()
-                                                    + "\nTIENE REGISTROS ASOCIADOS EN EDUCACION FORMAL\n");
-                                            // SE DEBE CLONAR EL PROGRAMA ACADEMICO EN UN DTO PARA PODER PONERLE COMO FORANEA LA INSTITUCION EDUCATIVA CORRECTA Y LUEGO PERSISTIR
-                                            if (programaAcademicoDtos.isEmpty()) {
-                                                programaAcademicoDtos = new ArrayList<>();
-                                            }
-                                            programaAcademicoDtos.add(ConvertidorEntityToDto.programaAcademicoEntityToDto(programaAcademico));
+                                            programaAcademicoServiceDao.actualizar(programaAcademico.getCodTituloAcademico(), listaInstitucionesCorrectas.get(0));
+                                            logger.info("PROGRAMA ACADEMICO : " + programaAcademico.getNombreProgramaAcademico() + " | NUEVA INSTITUCION: " + programaAcademico.getInstitucionEdu().getCodInstitucionEducativa());
+
                                             // AQUI SE DEBE CLONAR EL PROGRAMA ACADEMICO PARA PODER ACTUALIZAR LA FORANEA DE INSTITUCION EDUCATIVA Y POSTERIORMENTE HACER EL UPDATE
                                             for (EducacionFormal educacionFormal : programaAcademico.getListaEduFormal()) {
-                                                // *** este logger es informativo para que se evidencie si hay registros en educacion formal
-                                                logger.info(educacionFormal.toString());
+//                                                // *** este logger es informativo para que se evidencie si hay registros en educacion formal
+                                                logger.info("getCodPersona" + educacionFormal.getCodPersona());
                                             }
-                                        } else {
-                                            // SI EL RESULTADO ES VACIO ENTONCES SE DEBE ELIMINAR LA INSTITUCION EDUCATIVA Y TODAS SUS DEPENDENCIAS
-                                            logger.info("INSTITUCION EDUCATIVA : " + institucionEducativa.getNombreInstitucion()
-                                                    + "\nPROGRAMA ACADEMICO: " + programaAcademico.getNombreProgramaAcademico()
-                                                    + "\nNO TIENE REGISTROS ASOCIADOS EN EDUCACION FORMAL");
                                         }
                                     }
-                                }
+                                    // AHORA SE ELIMINA LA INSTITUCION EDUCATIVA
+                                    institucionEducativaServiceDao.eliminar(institucionEducativa);
+                                    logger.info("INSTITUCION EDUCATIVA ELIMINADA POR NO TENER PROGRAMADAS ACADEMICOS NI EDUCACION FORMAL ASOCIADOS: " + institucionEducativa.getCodInstitucionEducativa() + " - " + institucionEducativa.getNombreInstitucion());
+                                } else {
+                                    // NO TIENE PROGRAMAS ACADEMICOS REGISTRADOS
+                                    // ELIMINAR INTITUCION
+                                    institucionEducativaServiceDao.eliminar(institucionEducativa);
+                                    logger.info("INSTITUCION EDUCATIVA ELIMINADA POR NO TENER PROGRAMADAS ACADEMICOS ASOCIADOS: " + institucionEducativa.getCodInstitucionEducativa() + " - " + institucionEducativa.getNombreInstitucion());
 
+                                }
+                                // 
                                 // SI ENCONTRO REGISTROS AQUI DEBEMOS 
                                 // CONSULTAR EN BASE DE DATOS AL REGISTRO EN INSTITUCION EDUCATIVA = "REQUIERE CORRECCION" 
                                 // Y OBTENEMOS EL VALOR DEL ID.
@@ -103,35 +104,33 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                                 // EN LA TABLA INSTITUCION EDUCATIVA
                             } else {
                                 logger.info("REGISTRO EXCEL NO ESTA MARCADO PARA BORRADO FISICO : " + registro.getValorActualSIGEPII());
-//                      InstitucionEducativa registroProcesado = institucionEducativaDao.save(institucionEducativa);
-//                      logger.info("Registro procesado : " + registroProcesado.toString());
+                                // InstitucionEducativa registroProcesado = institucionEducativaDao.save(institucionEducativa);
+                                // logger.info("Registro procesado : " + registroProcesado.toString());
                             }
 
-//                      logger.info("Registro encontrado : " + institucionEducativa.toString());
+                            //logger.info("Registro encontrado : " + institucionEducativa.toString());
                             institucionEducativa.setNombreInstitucion(registro.getValorNuevoSIGEPII());
                             logger.info("InstitucionEducativa VALOR ANTES DEL AJUSTE: " + registro.getValorActualSIGEPII());
                             logger.info("InstitucionEducativa AJUSTADA: " + registro.getValorNuevoSIGEPII());
                             logger.info("Cantidad de Programas Academicos Encontrados para Ajustar: " + institucionEducativa.getProgramasAcademicos().size());
                         }
                     } else {
-                        for (InstitucionEducativa listaInstitucionesCorrecta : listaInstitucionesCorrectas) {
-                            listaInstitucionesCorrecta.setRegistro(registro.getValorActualSIGEPII());
-                            registrosDuplicados.add(listaInstitucionesCorrecta);
+                        for (InstitucionEducativa institucionesCorrecta : listaInstitucionesCorrectas) {
+                            registrosDuplicados.add(institucionesCorrecta);
                         }
                     }
 
                 }
                 if (registrosDuplicados.size() > 0) {
-                    logger.info("\n\n ************* Instituciones Educativas Correctas Duplicadas ************* \n\n ");
+                    logger.info("\n\n ************* Se encontro mas de una Institucion Educativa Correcta, por favor validar ************* \n\n ");
                     for (InstitucionEducativa registrosDuplicado : registrosDuplicados) {
-                        logger.info("REGISTRO EN EXCEL: " + registrosDuplicado.getRegistro() + " - INSTITUCION REPETIDA: " + registrosDuplicado.getNombreInstitucion()
+                        logger.info("INSTITUCION REPETIDA: " + registrosDuplicado.getNombreInstitucion()
                                 + " - COD_INSTITUCION_EDUCATIVA: " + registrosDuplicado.getCodInstitucionEducativa());
                     }
                 }
             }
         } catch (Exception ex) {
             logger.error(null, ex);
-
         }
         return registrosDuplicados;
     }
