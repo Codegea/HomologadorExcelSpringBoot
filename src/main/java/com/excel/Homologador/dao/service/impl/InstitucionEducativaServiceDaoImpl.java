@@ -38,4 +38,9 @@ public class InstitucionEducativaServiceDaoImpl implements InstitucionEducativaS
         return institucionEducativaDao.findByNombreInstitucion(nombreInstitucion);
     }
 
+    @Override
+    public InstitucionEducativa buscarInstitucionPorId(Long idInstitucion) {
+        return institucionEducativaDao.findByCodInstitucionEducativa(idInstitucion);
+    }
+
 }
