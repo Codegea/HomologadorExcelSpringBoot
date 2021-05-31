@@ -95,6 +95,10 @@ public class XLSX2CSV {
                 registro.setValorActualSIGEPII(formattedValue);
             }
 
+            if (cellReference.contains("C")) {
+                registro.setModificar(formattedValue);
+            }
+
             if (cellReference.contains("D")) {
                 registro.setValorNuevoSIGEPII(formattedValue);
             }

@@ -64,6 +64,7 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
         try {
             List<RegistrosDto> registros = XLSX2CSV.ProcesarExcel();
             if (!registros.isEmpty()) {
+                long inicio = System.currentTimeMillis();
                 Map<Long, String> institucionXeliminar = new HashMap<>();
                 for (RegistrosDto registro : registros) {
                     List<InstitucionEducativa> listaInstitucionesXcorregir = institucionEducativaServiceDao.encontrarPorNombreInstitucion(registro.getValorActualSIGEPII());
@@ -88,14 +89,17 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                                         }
                                     }
                                 }
+                                institucionXeliminar.put(institucionEducativa.getCodInstitucionEducativa(), institucionEducativa.getNombreInstitucion());
                             } else {
-                                logger.info("REGISTRO EXCEL NO ESTA MARCADO PARA BORRADO FISICO : " + registro.getValorActualSIGEPII());
-//                                 InstitucionEducativa registroProcesado = institucionEducativaDao.save(institucionEducativa); 
-                                // logger.info("Registro procesado : " + registroProcesado.toString());
+                                if (registro.getModificar() != null) {
+                                    // ESTE REGISTRO NO TIENE MARCA DE ELIMINADO FISICO POR LO TANTO SOLO SE HOMOLOGA SU NOMBRE ACTUAL POR EL NUEVO.
+                                    if (!registro.getModificar().equalsIgnoreCase("NO") || !registro.getModificar().equalsIgnoreCase("X")) {
+                                        institucionEducativa.setNombreInstitucion(registro.getValorNuevoSIGEPII());
+                                        institucionEducativaServiceDao.guardar(institucionEducativa);
+                                        logger.info("INSTITUCION EDUCATIVA HOMOLOGADA : " + institucionEducativa.getCodInstitucionEducativa() + " - " + institucionEducativa.getNombreInstitucion());
+                                    }
+                                }
                             }
-                            institucionXeliminar.put(institucionEducativa.getCodInstitucionEducativa(), institucionEducativa.getNombreInstitucion());
-                            logger.info("InstitucionEducativa VALOR ANTES DEL AJUSTE: " + registro.getValorActualSIGEPII());
-                            logger.info("InstitucionEducativa AJUSTADA: " + registro.getValorNuevoSIGEPII());
                         }
                     } else {
                         if (listaInstitucionesCorrectas.isEmpty() || listaInstitucionesCorrectas.size() == 0) {
@@ -106,7 +110,6 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                             }
                         }
                     }
-
                 }
                 if (institucionXeliminar.size() > 0) {
                     for (Map.Entry<Long, String> entry : institucionXeliminar.entrySet()) {
@@ -122,7 +125,10 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                                 + " - COD_INSTITUCION_EDUCATIVA: " + registrosDuplicado.getCodInstitucionEducativa());
                     }
                 }
-
+                logger.info("\n************************** ARCHIVO PROCESADO CON EXITO! **************************\n");
+                long fin = System.currentTimeMillis();
+                double tiempo = (double) ((inicio - fin) / 1000);
+                logger.info("Tiempo : " + tiempo);
             }
         } catch (Exception ex) {
             logger.error(null, ex);
