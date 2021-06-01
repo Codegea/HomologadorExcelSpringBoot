@@ -6,6 +6,7 @@ import com.excel.Homologador.dto.RegistrosDto;
 import com.excel.Homologador.entity.EducacionFormal;
 import com.excel.Homologador.entity.InstitucionEducativa;
 import com.excel.Homologador.entity.ProgramaAcademico;
+import com.excel.Homologador.properties.ParametrizacionProperties;
 import com.excel.Homologador.utils.XLSX2CSV;
 import java.io.File;
 import java.io.IOException;
@@ -18,14 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.excel.Homologador.service.IInstitucionEducativaService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.excel.Homologador.service.IHomologadorService;
 
 @Service
-public class InstitucionEducativaServiceImpl implements IInstitucionEducativaService {
+public class HomologadorServiceImpl implements IHomologadorService {
 
     @Autowired
     InstitucionEducativaServiceDao institucionEducativaServiceDao;
@@ -33,7 +34,10 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
     @Autowired
     ProgramaAcademicoServiceDao programaAcademicoServiceDao;
 
-    Logger logger = LoggerFactory.getLogger(InstitucionEducativaServiceImpl.class);
+    @Autowired
+    ParametrizacionProperties propiedades;
+
+    Logger logger = LoggerFactory.getLogger(HomologadorServiceImpl.class);
 
     @Override
     public StringBuilder uploadFile(MultipartFile file, RedirectAttributes attributes) throws IOException {
@@ -62,7 +66,7 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
     public List<InstitucionEducativa> homologarFichero() {
         List<InstitucionEducativa> registrosDuplicados = new ArrayList<>();
         try {
-            List<RegistrosDto> registros = XLSX2CSV.ProcesarExcel();
+            List<RegistrosDto> registros = XLSX2CSV.ProcesarExcel(propiedades.getPathFicheroExcel());
             if (!registros.isEmpty()) {
                 long inicio = System.currentTimeMillis();
                 Map<Long, String> institucionXeliminar = new HashMap<>();
