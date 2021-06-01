@@ -33,11 +33,6 @@ public class HomologadorControllerRest {
         return institucionEducativaDao.findAll(pageable);
     }
 
-    @GetMapping("/listarxNombre")
-    public List<InstitucionEducativa> listarXNombre() {
-        return institucionEducativaDao.findByNombreInstitucion("FUNDACION UNIVERSIDAD DE AMERICA");
-    }
-
     @GetMapping("/listarProgramasAcade")
     public Page<ProgramaAcademico> listarRestProgramaAcademico(@PageableDefault(size = 10, page = 0) Pageable pageable) {
         return programaAcademicoDao.findAll(pageable);

@@ -9,4 +9,5 @@ public class RegistrosDto {
     private String valorNuevoSIGEPII;
     private String modificar;
     private String elimBorradoFisico;
+
 }
