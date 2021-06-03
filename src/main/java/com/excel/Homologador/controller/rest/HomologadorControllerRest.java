@@ -6,7 +6,6 @@ import com.excel.Homologador.dao.IProgramaAcademicoDao;
 import com.excel.Homologador.entity.EducacionFormal;
 import com.excel.Homologador.entity.InstitucionEducativa;
 import com.excel.Homologador.entity.ProgramaAcademico;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Page;

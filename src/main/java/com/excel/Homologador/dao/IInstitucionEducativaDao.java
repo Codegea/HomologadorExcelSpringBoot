@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface IInstitucionEducativaDao extends JpaRepository<InstitucionEducativa, Long> {
 
     public List<InstitucionEducativa> findByNombreInstitucion(String nombreInstitucion);
-    
+
     public InstitucionEducativa findByCodInstitucionEducativa(Long codInstitucionEducativa);
 
 }

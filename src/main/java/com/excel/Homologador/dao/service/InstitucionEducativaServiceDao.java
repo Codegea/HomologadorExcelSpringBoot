@@ -12,6 +12,6 @@ public interface InstitucionEducativaServiceDao {
     public void eliminar(InstitucionEducativa institucionEducativa);
 
     public List<InstitucionEducativa> encontrarPorNombreInstitucion(String nombreInstitucion);
-    
+
     public InstitucionEducativa buscarInstitucionPorId(Long idInstitucion);
 }

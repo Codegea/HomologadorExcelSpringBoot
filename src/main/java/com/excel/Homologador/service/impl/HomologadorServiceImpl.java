@@ -106,14 +106,11 @@ public class HomologadorServiceImpl implements IHomologadorService {
                             }
                         }
                     } else {
-                        if (!registro.getModificar().equals("NO") && !registro.getModificar().equals("X")) {
-
-                            if (listaInstitucionesCorrectas.isEmpty() || listaInstitucionesCorrectas.size() == 0) {
-                                logger.info("\n\n******* NO SE ENCONTRO EL REGISTRO PARA ESTE NOMBRE DE INSTITUCION EDUCATIVA CORRECTA : " + registro.getValorNuevoSIGEPII() + "\n\n");
-                            } else {
-                                for (InstitucionEducativa institucionesCorrecta : listaInstitucionesCorrectas) {
-                                    registrosDuplicados.add(institucionesCorrecta);
-                                }
+                        if (listaInstitucionesCorrectas.isEmpty() || listaInstitucionesCorrectas.size() == 0) {
+                            logger.info("\n\n******* NO SE ENCONTRO EL REGISTRO PARA ESTE NOMBRE DE INSTITUCION EDUCATIVA CORRECTA : " + registro.getValorNuevoSIGEPII() + "\n\n");
+                        } else {
+                            for (InstitucionEducativa institucionesCorrecta : listaInstitucionesCorrectas) {
+                                registrosDuplicados.add(institucionesCorrecta);
                             }
                         }
                     }

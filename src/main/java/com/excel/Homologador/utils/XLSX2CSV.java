@@ -39,9 +39,10 @@ public class XLSX2CSV {
     public static List<RegistrosDto> registros;
     public RegistrosDto registro;
     static Logger logger = (Logger) LoggerFactory.getLogger(XLSX2CSV.class);
-    
+
     @Autowired
     ParametrizacionProperties properties;
+
     /**
      * Uses the XSSF Event SAX helpers to do most of the work of parsing the
      * Sheet XML, and outputs the contents as a (basic) CSV.
