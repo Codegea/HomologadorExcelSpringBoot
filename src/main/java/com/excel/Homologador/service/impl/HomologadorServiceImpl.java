@@ -76,8 +76,8 @@ public class HomologadorServiceImpl implements IHomologadorService {
                     if (!listaInstitucionesCorrectas.isEmpty() && listaInstitucionesCorrectas != null && listaInstitucionesCorrectas.size() == 1) {
                         for (InstitucionEducativa institucionEducativa : listaInstitucionesXcorregir) {
                             if (registro.getElimBorradoFisico().equals("SI")) {
-                                logger.info("\n\n\n***************************************\n\nREGISTRO EXCEL MARCADO PARA BORRADO FISICO NUEVO VALOR : " + registro.getValorNuevoSIGEPII());
-                                logger.info("INSTITUCION EDUCATIVA ITERADA X CORREGIR : " + institucionEducativa.getCodInstitucionEducativa() + " - " + institucionEducativa.getNombreInstitucion());
+                                logger.info("\n\n\n***************************************\n\nREGISTRO EXCEL MARCADO PARA BORRADO FÍSICO, NUEVO VALOR : " + registro.getValorNuevoSIGEPII());
+                                logger.info("INSTITUCION EDUCATIVA ITERADA POR CORREGIR : " + institucionEducativa.getCodInstitucionEducativa() + " - " + institucionEducativa.getNombreInstitucion());
                                 // CONSULTA POR CADA PROGRAMA ACADEMICO ASOCIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
                                 logger.info("TOTAL PROGRAMAS ACADEMICOS : [" + institucionEducativa.getProgramasAcademicos().size() + "]");
                                 if (institucionEducativa.getProgramasAcademicos().size() > 0) {
@@ -123,7 +123,7 @@ public class HomologadorServiceImpl implements IHomologadorService {
                     }
                 }
                 if (registrosDuplicados.size() > 0) {
-                    logger.info("\n\n ************* Se encontro mas de una Institucion Educativa Correcta, por favor validar ************* \n\n ");
+                    logger.info("\n\n ************* SE ENCONTRO MAS DE UNA INSTITUCION EDUCATIVA CORRECTA, POR FAVOR VALIDAR ************* \n\n ");
                     for (InstitucionEducativa registrosDuplicado : registrosDuplicados) {
                         logger.info("INSTITUCION REPETIDA: " + registrosDuplicado.getNombreInstitucion()
                                 + " - COD_INSTITUCION_EDUCATIVA: " + registrosDuplicado.getCodInstitucionEducativa());
@@ -132,7 +132,7 @@ public class HomologadorServiceImpl implements IHomologadorService {
                 logger.info("\n************************** ARCHIVO PROCESADO CON EXITO! **************************\n");
                 long fin = System.currentTimeMillis();
                 double tiempo = (double) ((inicio - fin) / 1000);
-                logger.info("Tiempo : " + tiempo);
+                logger.info("TIEMPO : " + tiempo);
             }
         } catch (Exception ex) {
             logger.error(null, ex);
