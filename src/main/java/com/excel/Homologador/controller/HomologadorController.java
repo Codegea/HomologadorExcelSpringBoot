@@ -35,7 +35,7 @@ public class HomologadorController extends Object {
         StringBuilder builder = homologador.uploadFile(file, attributes);
         List<InstitucionEducativa> institucionesDuplicadas = homologador.homologarFichero();
 
-        attributes.addFlashAttribute("message", "Archivo cargado en el servidor satisfactoriamente : " + builder.toString());
+        attributes.addFlashAttribute("message", "ARCHIVO PROCESADO SATISFACTORIAMENTE : " + builder.toString());
 
         return "redirect:/status";
     }
