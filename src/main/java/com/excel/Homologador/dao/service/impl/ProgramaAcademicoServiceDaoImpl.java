@@ -35,15 +35,15 @@ public class ProgramaAcademicoServiceDaoImpl implements ProgramaAcademicoService
      * academico
      *
      * @param id Codigo del programa academico
-     * @param institucionEducativa Entidad institucion educativa correcta
+     * @param institucionEducativaNueva Entidad institucion educativa correcta
      * @return ProgramaAcademico actualizado
      */
     @Override
-    public ProgramaAcademico actualizar(long id, InstitucionEducativa institucionEducativa) {
+    public ProgramaAcademico actualizar(long id, InstitucionEducativa institucionEducativaNueva) {
         Optional<ProgramaAcademico> programa = programaAcademicoDao.findById(id);
         if (programa.isPresent()) {
             ProgramaAcademico tmp = programa.get();
-            tmp.setInstitucionEdu(institucionEducativa);
+            tmp.setInstitucionEdu(institucionEducativaNueva);
             return programaAcademicoDao.save(tmp);
         }
         return null;

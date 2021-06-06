@@ -10,4 +10,5 @@ public class ParametrizacionProperties {
 
     @Value("${homologador.path.excel.file}")
     private String pathFicheroExcel;
+
 }

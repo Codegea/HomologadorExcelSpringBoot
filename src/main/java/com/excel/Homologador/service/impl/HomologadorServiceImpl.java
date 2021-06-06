@@ -72,27 +72,23 @@ public class HomologadorServiceImpl implements IHomologadorService {
                 Map<Long, String> institucionXeliminar = new HashMap<>();
                 for (RegistrosDto registro : registros) {
                     List<InstitucionEducativa> listaInstitucionesXcorregir = institucionEducativaServiceDao.encontrarPorNombreInstitucion(registro.getValorActualSIGEPII());
+                    if (listaInstitucionesXcorregir.size() < 1) {
+                        logger.info("\n\nLA INSTITUCION EDUCATIVA POR CORREGIR NO EXISTE EN LA BASE DE DATOS EN ESTOS MOMENTOS : " + registro.getValorActualSIGEPII());
+                        continue;
+                    }
                     List<InstitucionEducativa> listaInstitucionesCorrectas = institucionEducativaServiceDao.encontrarPorNombreInstitucion(registro.getValorNuevoSIGEPII());
-                    if (!listaInstitucionesCorrectas.isEmpty() && listaInstitucionesCorrectas != null && listaInstitucionesCorrectas.size() == 1) {
+                    if (registro.getValorNuevoSIGEPII() == null) {
+                        for (InstitucionEducativa institucionEducativaNull : listaInstitucionesCorrectas) {
+                            if (registro.getElimBorradoFisico().equals("SI")) {
+                                List<InstitucionEducativa> listaInstitucionRequiereCorreccion = institucionEducativaServiceDao.encontrarPorNombreInstitucion("REQUIERE CORRECCIÓN");
+                                procesarRegistroBorradoFisicoNull(institucionEducativaNull, listaInstitucionRequiereCorreccion);
+                                institucionXeliminar.put(institucionEducativaNull.getCodInstitucionEducativa(), institucionEducativaNull.getNombreInstitucion());
+                            }
+                        }
+                    } else if (!listaInstitucionesCorrectas.isEmpty() && listaInstitucionesCorrectas != null && listaInstitucionesCorrectas.size() == 1) {
                         for (InstitucionEducativa institucionEducativa : listaInstitucionesXcorregir) {
                             if (registro.getElimBorradoFisico().equals("SI")) {
-                                logger.info("\n\n\n***************************************\n\nREGISTRO EXCEL MARCADO PARA BORRADO FÍSICO, NUEVO VALOR : " + registro.getValorNuevoSIGEPII());
-                                logger.info("INSTITUCION EDUCATIVA ITERADA POR CORREGIR : " + institucionEducativa.getCodInstitucionEducativa() + " - " + institucionEducativa.getNombreInstitucion());
-                                // CONSULTA POR CADA PROGRAMA ACADEMICO ASOCIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
-                                logger.info("TOTAL PROGRAMAS ACADEMICOS : [" + institucionEducativa.getProgramasAcademicos().size() + "]");
-                                if (institucionEducativa.getProgramasAcademicos().size() > 0) {
-                                    for (ProgramaAcademico programaAcademico : institucionEducativa.getProgramasAcademicos()) {
-                                        logger.info("PROGRAMA ACADEMICO : " + programaAcademico.getCodTituloAcademico() + " - " + programaAcademico.getNombreProgramaAcademico() + " - ESTUDIANTES : [" + programaAcademico.getListaEduFormal().size() + "]");
-                                        for (EducacionFormal educacionFormal : programaAcademico.getListaEduFormal()) {
-//                                                // *** este logger es informativo para que se evidencie si hay registros en educacion formal
-                                            logger.info("ESTUDIANTE : " + educacionFormal.getCodPersona());
-                                        }
-                                        if (programaAcademico.getListaEduFormal().size() > 0) {
-                                            ProgramaAcademico programaActualizado = programaAcademicoServiceDao.actualizar(programaAcademico.getCodTituloAcademico(), listaInstitucionesCorrectas.get(0));
-                                            logger.info("PROGRAMA ACADEMICO : " + programaAcademico.getNombreProgramaAcademico() + " | NUEVA INSTITUCION: " + programaActualizado.getInstitucionEdu().getCodInstitucionEducativa() + " - " + programaActualizado.getInstitucionEdu().getNombreInstitucion());
-                                        }
-                                    }
-                                }
+                                procesarRegistroBorradoFisico(institucionEducativa, listaInstitucionesCorrectas, registro);
                                 institucionXeliminar.put(institucionEducativa.getCodInstitucionEducativa(), institucionEducativa.getNombreInstitucion());
                             } else {
                                 if (registro.getModificar() != null) {
@@ -104,6 +100,10 @@ public class HomologadorServiceImpl implements IHomologadorService {
                                     }
                                 }
                             }
+                        }
+                    } else if (registro.getValorNuevoSIGEPII() == null && listaInstitucionesCorrectas.size() > 1) {
+                        for (InstitucionEducativa institucionEducativa : listaInstitucionesXcorregir) {
+                            procesarRegistroBorradoFisico(institucionEducativa, listaInstitucionesCorrectas, registro);
                         }
                     } else {
                         if (listaInstitucionesCorrectas.isEmpty() || listaInstitucionesCorrectas.size() == 0) {
@@ -131,12 +131,64 @@ public class HomologadorServiceImpl implements IHomologadorService {
                 }
                 logger.info("\n************************** ARCHIVO PROCESADO CON EXITO! **************************\n");
                 long fin = System.currentTimeMillis();
-                double tiempo = (double) ((inicio - fin) / 1000);
-                logger.info("TIEMPO : " + tiempo);
+                double tiempo = (double) (((fin - inicio) / 1000) / 60);
+                logger.info("TIEMPO DEL PROCESO : " + tiempo + " Minutos");
             }
         } catch (Exception ex) {
             logger.error(null, ex);
         }
         return registrosDuplicados;
+    }
+
+    private void procesarRegistroBorradoFisico(InstitucionEducativa institucionEducativaXcorregir, List<InstitucionEducativa> listaInstitucionesCorrectas, RegistrosDto registro) {
+        ProgramaAcademico programaActualizado = null;
+        logger.info("\n\n\n***************************************\n\nREGISTRO EXCEL MARCADO PARA BORRADO FÍSICO, NUEVO VALOR : " + registro.getValorNuevoSIGEPII());
+        logger.info("INSTITUCION EDUCATIVA ITERADA POR CORREGIR : " + institucionEducativaXcorregir.getCodInstitucionEducativa() + " - " + institucionEducativaXcorregir.getNombreInstitucion());
+        // CONSULTA POR CADA PROGRAMA ACADEMICO ASOCIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
+        logger.info("TOTAL PROGRAMAS ACADEMICOS : [" + institucionEducativaXcorregir.getProgramasAcademicos().size() + "]");
+
+        if (institucionEducativaXcorregir.getProgramasAcademicos().size() > 0) {
+            for (ProgramaAcademico programaAcademico : institucionEducativaXcorregir.getProgramasAcademicos()) {
+                logger.info("PROGRAMA ACADEMICO : " + programaAcademico.getCodTituloAcademico() + " - " + programaAcademico.getNombreProgramaAcademico() + " - ESTUDIANTES : [" + programaAcademico.getListaEduFormal().size() + "]");
+                for (EducacionFormal educacionFormal : programaAcademico.getListaEduFormal()) {
+                    // *** este logger es informativo para que se evidencie si hay registros en educacion formal
+                    logger.info("ESTUDIANTE : " + educacionFormal.getCodPersona());
+                }
+                if (programaAcademico.getListaEduFormal().size() > 0) {
+                    programaActualizado = programaAcademicoServiceDao.actualizar(programaAcademico.getCodTituloAcademico(), listaInstitucionesCorrectas.get(0));
+                    logger.info("PROGRAMA ACADEMICO : " + programaAcademico.getNombreProgramaAcademico() + " | NUEVA INSTITUCION: " + programaActualizado.getInstitucionEdu().getCodInstitucionEducativa() + " - " + programaActualizado.getInstitucionEdu().getNombreInstitucion());
+                }
+            }
+        }
+    }
+
+    /**
+     * Metodo que procesa la logica para que cuando un registro de institucion
+     * educativa correcta sea NULL se deba asociar sus programas academicos a la
+     * institucion REQUIERE CORRECCION siempre y cuando tenga estudiantes.
+     *
+     * @param institucionEducativaNull
+     * @param listaInstitucionesRequiereCorreccion
+     */
+    private void procesarRegistroBorradoFisicoNull(InstitucionEducativa institucionEducativaNull, List<InstitucionEducativa> listaInstitucionesRequiereCorreccion) {
+        ProgramaAcademico programaActualizado = null;
+        logger.info("\n\n\n***************************************\n\nREGISTRO EXCEL MARCADO PARA BORRADO FÍSICO, NUEVO VALOR REQUIERE CORECCION X REGISTRO NULL\n");
+        logger.info("INSTITUCION EDUCATIVA NULL ITERADA POR CORREGIR : " + institucionEducativaNull.getCodInstitucionEducativa() + " - " + institucionEducativaNull.getNombreInstitucion());
+        // CONSULTA POR CADA PROGRAMA ACADEMICO ASOCIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
+        logger.info("TOTAL PROGRAMAS ACADEMICOS : [" + institucionEducativaNull.getProgramasAcademicos().size() + "]");
+
+        if (institucionEducativaNull.getProgramasAcademicos().size() > 0) {
+            for (ProgramaAcademico programaAcademico : institucionEducativaNull.getProgramasAcademicos()) {
+                logger.info("PROGRAMA ACADEMICO : " + programaAcademico.getCodTituloAcademico() + " - " + programaAcademico.getNombreProgramaAcademico() + " - ESTUDIANTES : [" + programaAcademico.getListaEduFormal().size() + "]");
+                for (EducacionFormal educacionFormal : programaAcademico.getListaEduFormal()) {
+                    // *** este logger es informativo para que se evidencie si hay registros en educacion formal
+                    logger.info("ESTUDIANTE : " + educacionFormal.getCodPersona());
+                }
+                if (programaAcademico.getListaEduFormal().size() > 0) {
+                    programaActualizado = programaAcademicoServiceDao.actualizar(programaAcademico.getCodTituloAcademico(), listaInstitucionesRequiereCorreccion.get(0));
+                    logger.info("PROGRAMA ACADEMICO : " + programaAcademico.getNombreProgramaAcademico() + " | NUEVA INSTITUCION: " + programaActualizado.getInstitucionEdu().getCodInstitucionEducativa() + " - " + programaActualizado.getInstitucionEdu().getNombreInstitucion());
+                }
+            }
+        }
     }
 }
