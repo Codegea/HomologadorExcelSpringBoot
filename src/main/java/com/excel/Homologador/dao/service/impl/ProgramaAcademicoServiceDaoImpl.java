@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProgramaAcademicoServiceDaoImpl implements ProgramaAcademicoServiceDao {
@@ -26,6 +27,7 @@ public class ProgramaAcademicoServiceDaoImpl implements ProgramaAcademicoService
     }
 
     @Override
+    @Transactional
     public void eliminar(ProgramaAcademico programaAcademico) {
         programaAcademicoDao.delete(programaAcademico);
     }
@@ -39,6 +41,7 @@ public class ProgramaAcademicoServiceDaoImpl implements ProgramaAcademicoService
      * @return ProgramaAcademico actualizado
      */
     @Override
+    @Transactional
     public ProgramaAcademico actualizar(long id, InstitucionEducativa institucionEducativa) {
         Optional<ProgramaAcademico> programa = programaAcademicoDao.findById(id);
         if (programa.isPresent()) {
