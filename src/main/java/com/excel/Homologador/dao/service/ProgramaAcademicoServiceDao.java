@@ -13,7 +13,7 @@ public interface ProgramaAcademicoServiceDao {
 
     public void eliminar(ProgramaAcademico programaAcademico);
 
-    public ProgramaAcademico actualizar(long id, InstitucionEducativa institucionEducativaNueva);
+    public ProgramaAcademico actualizar(long id, InstitucionEducativa institucionEducativa);
 
     public Optional<ProgramaAcademico> obtenerPorId(Long id);
 

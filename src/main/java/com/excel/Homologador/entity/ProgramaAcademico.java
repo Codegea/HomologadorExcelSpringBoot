@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -59,11 +58,11 @@ public class ProgramaAcademico implements Serializable {
     @Column(name = "AUD_ACCION")
     private Long audAccion;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "COD_INSTITUCION", referencedColumnName = "COD_INSTITUCION_EDUCATIVA")
     private InstitucionEducativa institucionEdu;
 
-    @OneToMany(mappedBy = "programa", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "programa")
     private List<EducacionFormal> listaEduFormal;
 
 }

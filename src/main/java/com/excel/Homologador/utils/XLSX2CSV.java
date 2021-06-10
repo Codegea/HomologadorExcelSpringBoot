@@ -1,7 +1,6 @@
 package com.excel.Homologador.utils;
 
 import com.excel.Homologador.dto.RegistrosDto;
-import com.excel.Homologador.properties.ParametrizacionProperties;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +27,6 @@ import org.apache.poi.xssf.model.StylesTable;
 import org.apache.poi.xssf.usermodel.XSSFComment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -39,9 +37,6 @@ public class XLSX2CSV {
     public static List<RegistrosDto> registros;
     public RegistrosDto registro;
     static Logger logger = (Logger) LoggerFactory.getLogger(XLSX2CSV.class);
-
-    @Autowired
-    ParametrizacionProperties properties;
 
     /**
      * Uses the XSSF Event SAX helpers to do most of the work of parsing the
@@ -100,10 +95,6 @@ public class XLSX2CSV {
                     registro = new RegistrosDto();
                     registro.setValorActualSIGEPII(formattedValue);
                 }
-            }
-
-            if (cellReference.contains("C")) {
-                registro.setModificar(formattedValue);
             }
 
             if (cellReference.contains("D")) {
@@ -238,10 +229,11 @@ public class XLSX2CSV {
         }
     }
 
-    public static List ProcesarExcel(String path) {
+    public static List ProcesarExcel() {
         try {
             long inicio = System.currentTimeMillis();
-            File xlsxFile = new File(path);
+
+            File xlsxFile = new File("C:\\Users\\Codegea\\uploads\\datos.xlsx");
             if (!xlsxFile.exists()) {
                 logger.error("Archivo xlsx no encontrado: " + xlsxFile.getPath());
 
