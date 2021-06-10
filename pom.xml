@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.excel</groupId>
     <artifactId>Homologador</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>Homologador</name>
     <description>Homologador de excel y Oracle</description>
     <properties>

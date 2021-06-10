@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.excel.Homologador.service.IInstitucionEducativaService;
 import java.util.List;
+import com.excel.Homologador.service.IHomologadorService;
 
 @Controller
 public class HomologadorController extends Object {
 
     @Autowired
-    IInstitucionEducativaService homologador;
+    IHomologadorService homologador;
 
     @GetMapping("/")
     public String index() {

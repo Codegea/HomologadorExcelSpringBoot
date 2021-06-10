@@ -19,11 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.excel.Homologador.service.IInstitucionEducativaService;
 import java.util.ArrayList;
+import com.excel.Homologador.service.IHomologadorService;
 
 @Service
-public class InstitucionEducativaServiceImpl implements IInstitucionEducativaService {
+public class HomologadorServiceImpl implements IHomologadorService {
 
     @Autowired
     InstitucionEducativaServiceDao institucionEducativaServiceDao;
@@ -31,7 +31,7 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
     @Autowired
     ProgramaAcademicoServiceDao programaAcademicoServiceDao;
 
-    Logger logger = LoggerFactory.getLogger(InstitucionEducativaServiceImpl.class);
+    Logger logger = LoggerFactory.getLogger(HomologadorServiceImpl.class);
 
     @Override
     public StringBuilder uploadFile(MultipartFile file, RedirectAttributes attributes) throws IOException {
@@ -45,6 +45,10 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
 
         byte[] fileBytes = file.getBytes();
         Path path = Paths.get(builder.toString());
+        File fileActual = new File(builder.toString());
+        if (fileActual.exists()) {
+            fileActual.delete();
+        }
         Files.write(path, fileBytes);
 
         return builder;
