@@ -10,4 +10,6 @@ public interface IInstitucionEducativaDao extends JpaRepository<InstitucionEduca
 
     public List<InstitucionEducativa> findByNombreInstitucion(String nombreInstitucion);
 
+    public InstitucionEducativa findByCodInstitucionEducativa(Long codInstitucionEducativa);
+
 }

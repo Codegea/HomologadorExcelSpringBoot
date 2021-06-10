@@ -3,7 +3,6 @@ package com.excel.Homologador.controller;
 import com.excel.Homologador.entity.InstitucionEducativa;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,11 +33,9 @@ public class HomologadorController extends Object {
         }
 
         StringBuilder builder = homologador.uploadFile(file, attributes);
-        // ESTE PROCESO DEBERA RETORNAR UNA LISTA DE INSTITUCIONES EDUCATIVAS CON REGISTROS MULTIPLES POR SU NOMBRE
-        // SI HAY REGISTROS EN ESTA LISTA SE DEBE MOSTRAR AL USUARIO UNA TABLA CON EL CONTENIDO
         List<InstitucionEducativa> institucionesDuplicadas = homologador.homologarFichero();
 
-        attributes.addFlashAttribute("message", "Archivo cargado en el servidor satisfactoriamente : " + builder.toString());
+        attributes.addFlashAttribute("message", "ARCHIVO PROCESADO SATISFACTORIAMENTE : " + builder.toString());
 
         return "redirect:/status";
     }

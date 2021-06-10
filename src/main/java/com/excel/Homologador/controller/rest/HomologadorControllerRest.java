@@ -6,7 +6,6 @@ import com.excel.Homologador.dao.IProgramaAcademicoDao;
 import com.excel.Homologador.entity.EducacionFormal;
 import com.excel.Homologador.entity.InstitucionEducativa;
 import com.excel.Homologador.entity.ProgramaAcademico;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.domain.Page;
@@ -31,11 +30,6 @@ public class HomologadorControllerRest {
     @GetMapping("/listarInstituciones")
     public Page<InstitucionEducativa> listarRest(@PageableDefault(size = 10, page = 0) Pageable pageable) {
         return institucionEducativaDao.findAll(pageable);
-    }
-
-    @GetMapping("/listarxNombre")
-    public List<InstitucionEducativa> listarXNombre() {
-        return institucionEducativaDao.findByNombreInstitucion("FUNDACION UNIVERSIDAD DE AMERICA");
     }
 
     @GetMapping("/listarProgramasAcade")
