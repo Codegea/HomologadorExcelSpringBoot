@@ -66,10 +66,14 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                 for (RegistrosDto registro : registros) {
                     List<InstitucionEducativa> listaInstitucionesXcorregir = institucionEducativaServiceDao.encontrarPorNombreInstitucion(registro.getValorActualSIGEPII());
                     if (listaInstitucionesXcorregir.size() < 1) {
-                        logger.info("\n\nLA INSTITUCION EDUCATIVA POR CORREGIR NO EXISTE EN LA BASE DE DATOS EN ESTOS MOMENTOS : " + registro.getValorActualSIGEPII());
+                        logger.info("\n\nLA INSTITUCION EDUCATIVA POR CORREGIR NO EXISTE EN LA BASE DE DATOS EN ESTOS MOMENTOS : " + registro.getValorActualSIGEPII() + " | NUEVA INSTITUCION: " + registro.getValorNuevoSIGEPII());
                         continue;
                     }
                     List<InstitucionEducativa> listaInstitucionesCorrectas = institucionEducativaServiceDao.encontrarPorNombreInstitucion(registro.getValorNuevoSIGEPII());
+                    if (listaInstitucionesCorrectas.size() < 1) {
+                        logger.info("\n\nLA INSTITUCION EDUCATIVA CORRECTA NO EXISTE EN LA BASE DE DATOS EN ESTOS MOMENTOS : " + registro.getValorNuevoSIGEPII());
+                        continue;
+                    }
                     if (listaInstitucionesCorrectas.size() > 0 && registro.getValorNuevoSIGEPII() == null) {
                         for (InstitucionEducativa institucionEducativaNull : listaInstitucionesCorrectas) {
                             if (registro.getElimBorradoFisico().equals("SI")) {
@@ -116,34 +120,31 @@ public class InstitucionEducativaServiceImpl implements IInstitucionEducativaSer
                                 // ELIMINAR INTITUCION
                                 logger.info("INSTITUCION EDUCATIVA ELIMINADA: " + institucionEducativa.getCodInstitucionEducativa() + " - " + institucionEducativa.getNombreInstitucion());
                                 institucionEducativaServiceDao.eliminar(institucionEducativa);
-
                             } else {
                                 logger.info("REGISTRO EXCEL NO ESTA MARCADO PARA BORRADO FISICO : " + registro.getValorActualSIGEPII());
                             }
                         }
-                    } else {
+                    } else if (!listaInstitucionesCorrectas.isEmpty() && listaInstitucionesCorrectas != null && listaInstitucionesCorrectas.size() > 1) {
                         for (InstitucionEducativa institucionesCorrecta : listaInstitucionesCorrectas) {
                             registrosDuplicados.add(institucionesCorrecta);
                         }
                     }
-
                 }
                 if (registrosDuplicados.size() > 0) {
-                    logger.info("\n\n ************* Se encontro mas de una Institucion Educativa Correcta, por favor validar ************* \n\n ");
+                    logger.info("\nSE ENCONTRO MAS DE UNA INSTITUCION EDUCATIVA CORRECTA, POR FAVOR VALIDAR:\n");
                     for (InstitucionEducativa registrosDuplicado : registrosDuplicados) {
-                        logger.info("INSTITUCION REPETIDA: " + registrosDuplicado.getNombreInstitucion()
-                                + " - COD_INSTITUCION_EDUCATIVA: " + registrosDuplicado.getCodInstitucionEducativa());
+                        logger.info("INSTITUCION EDUCATIVA CORRECTA REPETIDA: " + registrosDuplicado.getNombreInstitucion()
+                                + " - CODIGO INSTITUCION EDUCATIVA: " + registrosDuplicado.getCodInstitucionEducativa());
                     }
                 }
             }
-            logger.info("\n************************** ARCHIVO PROCESADO CON EXITO! **************************\n");
+            logger.info("\n\n************************** ARCHIVO PROCESADO CON EXITO! **************************\n");
             long fin = System.currentTimeMillis();
             Long tiempo = (Long) (((fin - inicio) / 1000) / 60);
-            logger.info("TIEMPO DEL PROCESO : " + tiempo + " Minutos");
+            logger.info("TIEMPO DEL PROCESO : " + tiempo + " MINUTOS");
         } catch (Exception ex) {
             logger.error(null, ex);
         }
         return registrosDuplicados;
     }
-
 }

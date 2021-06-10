@@ -91,12 +91,19 @@ public class XLSX2CSV {
                 cellReference = new CellAddress(currentRow, currentCol).formatAsString();
             }
             if (cellReference.contains("A")) {
-                registro = new RegistrosDto();
-                registro.setValorActualSIGEPII(formattedValue);
+                if (formattedValue != null) {
+                    registro = new RegistrosDto();
+                    registro.setValorActualSIGEPII(formattedValue);
+                }
             }
 
             if (cellReference.contains("D")) {
-                registro.setValorNuevoSIGEPII(formattedValue);
+                if (formattedValue != null) {
+                    if (registro == null) {
+                        registro = new RegistrosDto();
+                    }
+                    registro.setValorNuevoSIGEPII(formattedValue);
+                }
             }
 
             if (cellReference.contains("E")) {
