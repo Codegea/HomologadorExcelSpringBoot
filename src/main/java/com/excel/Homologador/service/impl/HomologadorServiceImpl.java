@@ -103,13 +103,13 @@ public class HomologadorServiceImpl implements IHomologadorService {
                     } else if (!listaInstitucionesCorrectas.isEmpty() && listaInstitucionesCorrectas != null && listaInstitucionesCorrectas.size() == 1) {
                         for (InstitucionEducativa institucionEducativa : listaInstitucionesXcorregir) {
                             if (registro.getElimBorradoFisico().equals("SI")) {
-                                logger.info("\n\n\n***************************************\n\nREGISTRO EXCEL MARCADO PARA BORRADO FISICO : " + registro.getValorActualSIGEPII());
+                                logger.info("\n\n\n***************************************\n\nINSTITUCIÓN EDUCATIVA CORRECTA: " + registro.getValorNuevoSIGEPII());
                                 // CONSULTA POR CADA PROGRAMA ACADEMICO ASOCIADO SI DENTRO DE EL HAY REGISTROS DE EDUCACION FORMAL
                                 if (institucionEducativa.getProgramasAcademicos().size() > 0) {
-                                    logger.info("INSTITUCIÓN EDUCATIVA CORRECTA: " + registro.getValorNuevoSIGEPII());
+                                    logger.info("REGISTRO EXCEL MARCADO PARA BORRADO FISICO : " + institucionEducativa.getCodInstitucionEducativa() + " - " + registro.getValorActualSIGEPII());
                                     for (ProgramaAcademico programaAcademico : institucionEducativa.getProgramasAcademicos()) {
                                         if (programaAcademico.getListaEduFormal().size() > 0) {
-                                            logger.info("PROGRAMA ACADEMICO POR ACTUALIZAR: " + programaAcademico.getNombreProgramaAcademico() + " - CANTIDAD ESTUDIANTES: [" + programaAcademico.getListaEduFormal().size() + "]");
+                                            logger.info("PROGRAMA ACADEMICO POR ACTUALIZAR: " + programaAcademico.getCodTituloAcademico() + " - " + programaAcademico.getNombreProgramaAcademico() + " - CANTIDAD ESTUDIANTES: [" + programaAcademico.getListaEduFormal().size() + "]");
                                             programaAcademicoServiceDao.actualizar(programaAcademico.getCodTituloAcademico(), listaInstitucionesCorrectas.get(0));
                                             // AQUI SE DEBE CLONAR EL PROGRAMA ACADEMICO PARA PODER ACTUALIZAR LA FORANEA DE INSTITUCION EDUCATIVA Y POSTERIORMENTE HACER EL UPDATE
                                             for (EducacionFormal educacionFormal : programaAcademico.getListaEduFormal()) {
@@ -117,7 +117,7 @@ public class HomologadorServiceImpl implements IHomologadorService {
                                                 logger.info("ESTUDIANTE : " + educacionFormal.getCodPersona());
                                             }
                                         }
-                                        logger.info("PROGRAMA ACADEMICO ELIMINADO: " + programaAcademico.getNombreProgramaAcademico());
+                                        logger.info("PROGRAMA ACADEMICO ELIMINADO: " + programaAcademico.getCodTituloAcademico() + " - " + programaAcademico.getNombreProgramaAcademico());
                                         programaAcademicoServiceDao.eliminar(programaAcademico);
                                     }
                                 }

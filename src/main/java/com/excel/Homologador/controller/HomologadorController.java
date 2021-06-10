@@ -38,7 +38,7 @@ public class HomologadorController extends Object {
         // SI HAY REGISTROS EN ESTA LISTA SE DEBE MOSTRAR AL USUARIO UNA TABLA CON EL CONTENIDO
         List<InstitucionEducativa> institucionesDuplicadas = homologador.homologarFichero();
 
-        attributes.addFlashAttribute("message", "Archivo cargado en el servidor satisfactoriamente : " + builder.toString());
+        attributes.addFlashAttribute("message", "ARCHIVO PROCESADO SATISFACTORIAMENTE : " + builder.toString());
 
         return "redirect:/status";
     }
